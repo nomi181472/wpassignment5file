@@ -1,0 +1,16 @@
+.dropbox {
+    width: 300px;
+    height: 300px;
+    border: 3px dashed #0a0202;
+}
+
+.c {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.hover:hover {
+    background-color: wheat;
+}

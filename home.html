@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>FTP File Saver</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script
+      src="https://code.jquery.com/jquery-3.5.1.js"
+      integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script
+      src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"
+      integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30="
+      crossorigin="anonymous"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+      integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+      crossorigin="anonymous"
+    ></script>
+
+    <link href="css/style.css" rel="stylesheet" />
+    <script src="jquery.js"></script>
+    <script>
+      $(document).ready(function () {
+        $("html").on("dragover", function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          $("h1").text("Drag here");
+        });
+
+        $("html").on("drop", function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+        });
+
+        $(".dropbox").on("dragenter", function (e) {
+          e.stopPropagation();
+          e.preventDefault();
+        });
+
+        $(".dropbox").on("dragover", function (e) {
+          e.stopPropagation();
+          e.preventDefault();
+        });
+
+        $(".dropbox").on("drop", function (e) {
+          e.stopPropagation();
+          e.preventDefault();
+          $("h1").text("");
+          var file = e.originalEvent.dataTransfer.files;
+
+          var fd = new FormData();
+          for (var i = 0; i < file.length; i++) {
+            uploadData(file[i]);
+          }
+        });
+      });
+      function uploadData(formdata) {
+        var obj = { file: formdata.name };
+        console.log(obj);
+        $.ajax({
+          url: "mysql.php",
+          type: "POST",
+          data: obj,
+          success: function (response) {
+            console.log(response);
+            $("#button").click(function () {
+              $.get("getdata.php", function (result) {
+                $("#list").html(result);
+              });
+            });
+            //addThumbnail(response);
+          },
+        });
+      }
+    </script>
+  </head>
+
+  <body>
+    <div class="navbar navbar-light" style="background-color: wheat">
+      <nav>
+        <a class="navbar-brand btn btn btn-warning" href="sc.html"
+          >ScreenShoot</a
+        >
+      </nav>
+    </div>
+    <div class="border border-light p-3 mb-4">
+      <div class="d-flex align-items-center justify-content-center">
+        <form
+          method="POST"
+          action="mysql.php"
+          class="ajax"
+          enctype="multipart/form-data"
+        >
+          <input type="file" id="file" name="file[]" multiple hidden />
+          <div class="dropbox">
+            <h1></h1>
+
+            <div class="hover">
+              <label class="font-weight-bold" for="file"
+                >Click or drag here to Upload File</label
+              >
+            </div>
+          </div>
+          <input type="submit" id="submit" hidden />
+        </form>
+      </div>
+    </div>
+    <div class="border border-light p-3 mb-4">
+      <div class="d-flex align-items-center justify-content-center">
+        <div id="list" class="container-fluid">
+          <button id="button" class="btn btn-warning">Show Files</button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
